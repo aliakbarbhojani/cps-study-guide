@@ -58,7 +58,7 @@ CPS Project/
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/aliakbarbhojani/tmu-cps-project
 ```
 
 Replace `YOUR_GITHUB_REPOSITORY_URL` with your repository's URL.

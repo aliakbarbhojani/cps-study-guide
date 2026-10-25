@@ -58,7 +58,7 @@ CPS Project/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/aliakbarbhojani/tmu-cps-project
+git clone https://github.com/aliakbarbhojani/cps-study-guide
 ```
 
 Navigate into the project folder:

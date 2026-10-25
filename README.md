@@ -61,8 +61,6 @@ CPS Project/
 git clone https://github.com/aliakbarbhojani/tmu-cps-project
 ```
 
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your repository's URL.
-
 Navigate into the project folder:
 
 ```bash

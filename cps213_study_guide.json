@@ -1,0 +1,1419 @@
+{
+  "project": {
+    "name": "CPS 213 Interactive Study Guide",
+    "description": "A structured knowledge base for the 40 CPS 213 Digital Design competencies, designed to be consumed by a Python application/frontend.",
+    "schema_version": "1.0",
+    "topic_count": 40,
+    "random_facts_are_separate": true,
+    "visuals_note": "Each topic contains a recommended local image path and a visual description. The image files themselves are not embedded in this JSON; place them in the project's visuals/ directory.",
+    "content_note": "Explanations are original instructional summaries synthesized from the supplied CPS 213 outline and independent digital-logic educational references."
+  },
+  "topics": [
+    {
+      "id": "01",
+      "title": "Numbering Systems",
+      "summary": "A positional number system represents quantities using a fixed radix (base). In base r, there are r valid digit symbols, and each position has a weight that is a power of r. Digital systems commonly use binary (base 2) because hardware can naturally represent two stable logic states. Octal (base 8) and hexadecimal (base 16) are compact ways to write binary values because one octal digit corresponds to 3 bits and one hexadecimal digit corresponds to 4 bits.",
+      "key_points": [
+        "Binary uses 0 and 1; octal uses 0–7; decimal uses 0–9; hexadecimal uses 0–9 and A–F.",
+        "For an integer, the rightmost digit has weight r^0, the next has r^1, and so on.",
+        "A digit's contribution is digit × positional weight.",
+        "Hexadecimal is especially convenient for representing machine-level bit patterns compactly."
+      ],
+      "worked_example": "Convert 1011₂ to decimal:\n1×2³ + 0×2² + 1×2¹ + 1×2⁰ = 8 + 0 + 2 + 1 = 11₁₀.",
+      "visual": {
+        "recommended_file": "visuals/topic_01_numbering_systems.png",
+        "description": "The diagram compares the four main number systems used in computing:\n\n- Binary (Base 2): Uses digits 0 and 1. Essential for computers and digital circuits.\n- Octal (Base 8): Uses digits 0-7. Provides a shorter way to represent binary values.\n- Decimal (Base 10): Uses digits 0-9. Commonly used in everyday counting.\n- Hexadecimal (Base 16): Uses digits 0-9 and letters A-F. Used in memory addresses, HTML colour codes, and programming.\n\nEach column shows the system's base, permitted digits, and common uses, along with an example number."
+      },
+      "study_tip": "Memorize the bases and digit sets, but understand place value rather than relying only on memorization.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Adafruit Learning System — Number Systems",
+          "url": "https://learn.adafruit.com/binary-boolean-and-logic/number-systems",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "02",
+      "title": "Number System Conversions",
+      "summary": "Conversions move a value between bases without changing the underlying quantity. To convert a base-r integer to decimal, multiply each digit by its positional weight and add. To convert a positive decimal integer to another base, repeatedly divide by the target base and read the remainders from bottom to top. Binary-to-octal and binary-to-hexadecimal conversions have shortcuts because 8 = 2³ and 16 = 2⁴.",
+      "key_points": [
+        "Base-r → decimal: sum digit × r^position.",
+        "Decimal → base-r integer: repeated division; remainders are read upward.",
+        "Binary ↔ octal: group bits in sets of 3 from the binary point outward.",
+        "Binary ↔ hexadecimal: group bits in sets of 4 from the binary point outward.",
+        "For fractions, positional weights become negative powers; repeated multiplication by the target base can be used for decimal fractions."
+      ],
+      "worked_example": "Convert 45₁₀ to binary:\n45÷2=22 r1, 22÷2=11 r0, 11÷2=5 r1, 5÷2=2 r1, 2÷2=1 r0, 1÷2=0 r1.\nRead remainders upward: 101101₂.",
+      "visual": {
+        "recommended_file": "visuals/topic_02_number_system_conversions.png",
+        "description": "The diagram demonstrates how to convert an octal number into hexadecimal using binary as an intermediate step:\n\n- Step 1: Convert each octal digit in (127) base 8 into 3-bit binary: 1 = 001, 2 = 010, and 7 = 111.\n- Step 2: Combine the groups to get 001010111 in binary.\n- Step 3: Group the binary digits into sets of four from the right, adding a leading zero where needed: 0101 and 0111.\n- Step 4: Convert each group into hexadecimal: 0101 = 5 and 0111 = 7.\n\nFinal answer: (127) base 8 = (57) base 16.\n\nThe key idea is that binary provides a convenient bridge between octal and hexadecimal."
+      },
+      "study_tip": "After converting, convert the result back to the original base to check your work.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Adafruit Learning System — Number Systems",
+          "url": "https://learn.adafruit.com/binary-boolean-and-logic/number-systems",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "03",
+      "title": "Signed Number Representations",
+      "summary": "Unsigned binary uses every bit for magnitude. Signed representations reserve the most-significant bit or use a different encoding to represent negative values. The three classic n-bit signed integer representations taught in introductory digital design are signed-magnitude, one's complement, and two's complement. Two's complement is the standard representation for signed integers in modern general-purpose digital systems because it has one zero and supports addition/subtraction using ordinary binary addition hardware.",
+      "key_points": [
+        "Signed-magnitude: MSB indicates sign; remaining bits encode magnitude.",
+        "One's complement: negative value is formed by inverting every bit of the positive value.",
+        "Two's complement: invert every bit and add 1.",
+        "Signed-magnitude and one's complement have both +0 and −0; two's complement has only one zero.",
+        "Two's complement's asymmetrical range includes one extra negative value."
+      ],
+      "worked_example": "For 8-bit −9:\n+9 = 00001001\none's complement = 11110110\nadd 1 → 11110111.\nTherefore −9 = 11110111₂ in 8-bit two's complement.",
+      "visual": {
+        "recommended_file": "visuals/topic_03_signed_number_representations.png",
+        "description": "The diagram explains how an 8-bit signed number uses a sign bit to represent positive and negative values.\n\n- Sign Bit: The first bit indicates the sign. A value of 0 represents a positive number, while 1 represents a negative number.\n\n- Magnitude Bits: The remaining 7 bits represent the number's magnitude (absolute value).\n\n- Positive Example: 00101101 represents +45. The sign bit is 0, and the magnitude bits represent 45.\n\n- Negative Example: 10101101 represents -45. The sign bit is 1, while the magnitude bits remain the same.\n\nKey idea: In sign-magnitude representation, the first bit indicates the sign and the remaining bits indicate the magnitude."
+      },
+      "study_tip": "Always keep the bit width fixed when performing signed conversions.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Adafruit Learning System — Number Systems",
+          "url": "https://learn.adafruit.com/binary-boolean-and-logic/number-systems",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "04",
+      "title": "Representable Value Ranges",
+      "summary": "The number of distinct bit patterns depends on the number of bits. With n binary bits there are 2^n possible patterns. How those patterns are interpreted determines the numerical range. Unsigned n-bit values range from 0 through 2^n−1. Signed-magnitude and one's complement range from −(2^(n−1)−1) to +(2^(n−1)−1), with two zeros. Two's complement ranges from −2^(n−1) to +(2^(n−1)−1), with one zero.",
+      "key_points": [
+        "n bits produce 2^n distinct bit patterns.",
+        "Unsigned: 0 to 2^n−1.",
+        "Signed-magnitude/one's complement: −(2^(n−1)−1) to +(2^(n−1)−1).",
+        "Two's complement: −2^(n−1) to 2^(n−1)−1.",
+        "For an r-ary system with n digits, there are r^n combinations."
+      ],
+      "worked_example": "For n=8:\nunsigned: 0–255;\nsigned-magnitude: −127–+127;\none's complement: −127–+127;\ntwo's complement: −128–+127.",
+      "visual": {
+        "recommended_file": "visuals/topic_04_representable_value_ranges.png",
+        "description": "Use a number-line visual showing the four ranges for an 8-bit word and mark the duplicated zero in signed-magnitude and one's complement."
+      },
+      "study_tip": "Separate the question 'how many patterns exist?' from 'what values do those patterns mean?'.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "05",
+      "title": "Signed and Unsigned Representation",
+      "summary": "A fixed bit pattern has no inherent sign; its meaning depends on the chosen representation. The same eight bits can represent an unsigned value, a signed-magnitude value, a one's-complement value, or a two's-complement value. Correct interpretation therefore requires knowing both the bit width and the representation.",
+      "key_points": [
+        "Unsigned interpretation treats every bit as a positive place value.",
+        "Signed-magnitude uses the MSB as sign and the remaining bits as magnitude.",
+        "One's complement and two's complement interpret the MSB as part of a negative encoding rather than simply a sign flag.",
+        "Never change the bit width during conversion unless the sign-extension rules are explicitly applied."
+      ],
+      "worked_example": "The bit pattern 11110111₂ is 247 unsigned, −119 in signed-magnitude, −8 in one's complement, and −9 in two's complement.",
+      "visual": {
+        "recommended_file": "visuals/topic_05_signed_and_unsigned_representation.png",
+        "description": "Display one 8-bit pattern in four columns and show how the interpreted decimal value changes with the representation."
+      },
+      "study_tip": "On exams, write the representation and bit width next to the binary number before interpreting it.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "06",
+      "title": "Signed Arithmetic",
+      "summary": "Two's-complement arithmetic lets the same binary adder perform addition and subtraction. To compute A−B, form the two's complement of B and add it to A; any carry beyond the fixed word width is discarded. Signed overflow is different from an ordinary carry out: it occurs when the true result cannot be represented in the chosen signed range.",
+      "key_points": [
+        "Subtraction: A−B = A + (two's complement of B).",
+        "Discard the final carry beyond the fixed word width.",
+        "Overflow can occur when adding two operands with the same sign and obtaining a result with the opposite sign.",
+        "A common hardware test is that carry into the sign bit differs from carry out of the sign bit."
+      ],
+      "worked_example": "Using 8 bits:\n5 = 00000101\n−3 = 11111101\nsum = 1 00000010\nDiscard the carry → 00000010 = 2.",
+      "visual": {
+        "recommended_file": "visuals/topic_06_signed_arithmetic.png",
+        "description": "Show two binary addends aligned vertically, a highlighted sign bit, and a separate callout distinguishing 'carry out' from 'signed overflow'."
+      },
+      "study_tip": "Check the mathematical range before declaring a result valid.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "07",
+      "title": "Logic Gates",
+      "summary": "Logic gates are the basic building blocks of digital combinational circuits. They implement Boolean functions over binary signals. AND outputs 1 only when every input is 1; OR outputs 1 when at least one input is 1; NOT inverts one input. NAND and NOR are inverted AND/OR functions and are universal gates. XOR outputs 1 when an odd number of inputs are 1, while XNOR outputs 1 when the inputs are equal for two inputs.",
+      "key_points": [
+        "AND: F=xy.",
+        "OR: F=x+y.",
+        "NOT: F=x′.",
+        "NAND: F=(xy)′.",
+        "NOR: F=(x+y)′.",
+        "XOR: F=x⊕y=x′y+xy′ for two inputs.",
+        "XNOR: F=(x⊕y)′=xy+x′y′ for two inputs.",
+        "For multiple-input XOR, output 1 when an odd number of inputs are 1."
+      ],
+      "worked_example": "For x=1,y=0:\nAND=0, OR=1, NAND=1, NOR=0, XOR=1, XNOR=0; NOT(x)=0.",
+      "visual": {
+        "recommended_file": "visuals/topic_07_logic_gates.png",
+        "description": "Include standard gate symbols next to their Boolean expressions and compact truth tables. A second visual can show NAND and NOR being used to construct NOT, AND, and OR."
+      },
+      "study_tip": "Learn the behavior first, then memorize the Boolean expression and symbol.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "08",
+      "title": "Tri-State Buffers",
+      "summary": "A tri-state buffer adds a third output condition to the normal 0/1 logic levels: high impedance, written Z. When enabled, the output follows the input. When disabled, the output is electrically disconnected from the driving circuit. Tri-state outputs allow multiple devices to share a bus, provided that the design guarantees that at most one driver is enabled at a time.",
+      "key_points": [
+        "Normal logic has two logical output states: 0 and 1.",
+        "Tri-state adds Z (high impedance), meaning the output driver is effectively disconnected.",
+        "Enable asserted → output follows input.",
+        "Enable deasserted → output becomes Z.",
+        "Bus conflicts occur if two enabled drivers attempt to force different values simultaneously."
+      ],
+      "worked_example": "For an active-high enable: EN=1 and D=0 → Y=0; EN=1 and D=1 → Y=1; EN=0 → Y=Z.",
+      "visual": {
+        "recommended_file": "visuals/topic_08_tri_state_buffers.png",
+        "description": "Draw a tri-state buffer feeding a shared bus alongside two other buffers. Show only one enable active and label the disabled outputs Z."
+      },
+      "study_tip": "Remember that Z is not the same as logical 0; it means the driver is not actively driving the line.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "09",
+      "title": "Timing Diagrams",
+      "summary": "A timing diagram shows how digital signals change over time. To determine an output, divide the diagram into intervals separated by input transitions, apply the circuit's Boolean behavior during each interval, and draw the output until the next transition. In real hardware, propagation delay means an output may change slightly after an input changes; introductory problems may ignore this delay unless it is explicitly shown.",
+      "key_points": [
+        "Time runs horizontally and signal levels vertically.",
+        "Evaluate the circuit for every interval in which inputs remain constant.",
+        "At an ideal gate, output changes immediately after an input change; real gates have propagation delay.",
+        "A glitch is a short unintended pulse that can arise from unequal propagation paths."
+      ],
+      "worked_example": "For F=x·y, F is 1 only during intervals where both waveforms are high. If x falls while y remains high, F falls with x; if y falls first, F falls with y.",
+      "visual": {
+        "recommended_file": "visuals/topic_09_timing_diagrams.png",
+        "description": "Show two square-wave inputs and a third waveform for an AND gate, with vertical time markers at every input transition."
+      },
+      "study_tip": "Make a small truth table beside the timing diagram; use it as your rule for each time interval.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Boolean Algebra Simplification",
+      "summary": "Boolean algebra provides algebraic rules for reducing logic expressions while preserving their truth-table behavior. Simplification can reduce the number of gates, literals, and logic levels needed in a circuit. A reliable approach is to look for complements, factor common terms, apply distributive/absorption laws, and repeatedly simplify until no useful reduction remains.",
+      "key_points": [
+        "Boolean variables take values 0 or 1.",
+        "Use complement pairs such as x+x′=1 and xx′=0 to eliminate terms.",
+        "Factoring often exposes identities that are not obvious in expanded form.",
+        "Simplification should preserve the function for every possible input combination."
+      ],
+      "worked_example": "F=xy+xy′+x′y\n=x(y+y′)+x′y\n=x+x′y\n=x+y.\nThe last step uses the absorption-related identity x+x′y=x+y.",
+      "visual": {
+        "recommended_file": "visuals/topic_10_boolean_algebra_simplification.png",
+        "description": "Show the original expression on the left and the simplified expression on the right, with each algebraic identity highlighted between steps."
+      },
+      "study_tip": "Write the identity you used beside each line while practicing; this makes errors much easier to diagnose.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Boolean Algebra Identities",
+      "summary": "Boolean identities are the standard algebraic laws used to transform and simplify Boolean expressions. They include identity, null, idempotent, complement, commutative, associative, distributive, absorption, DeMorgan's, and double-complement laws. Unlike ordinary arithmetic, Boolean addition and multiplication represent OR and AND, so the familiar arithmetic intuition cannot always be applied.",
+      "key_points": [
+        "Identity: x·1=x; x+0=x.",
+        "Null: x·0=0; x+1=1.",
+        "Idempotent: x·x=x; x+x=x.",
+        "Complement: x·x′=0; x+x′=1.",
+        "Commutative and associative laws permit reordering/regrouping.",
+        "Distributive: x(y+z)=xy+xz and x+yz=(x+y)(x+z).",
+        "Absorption: x+xy=x and x(x+y)=x.",
+        "DeMorgan: (xy)′=x′+y′ and (x+y)′=x′y′.",
+        "Double complement: (x′)′=x."
+      ],
+      "worked_example": "Simplify x + xy:\nx + xy = x(1+y) = x·1 = x.\nThis is the absorption law in action.",
+      "visual": {
+        "recommended_file": "visuals/topic_11_boolean_algebra_identities.png",
+        "description": "Create a two-column identity reference card with the AND-side and OR-side forms, plus a visual showing DeMorgan's law as a gate transformation."
+      },
+      "study_tip": "Memorize the identities in paired AND/OR form so you can recognize their dual versions quickly.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "title": "Operator Precedence",
+      "summary": "Boolean expressions need a defined evaluation order so that the same expression has one unambiguous meaning. Parentheses have highest priority, followed by NOT, AND, and OR. When an expression contains several operators, apply that order unless parentheses override it.",
+      "key_points": [
+        "1. Parentheses.",
+        "2. NOT (′).",
+        "3. AND (· or adjacency).",
+        "4. OR (+).",
+        "Explicit parentheses are recommended when an expression is complex or could be misread."
+      ],
+      "worked_example": "x + y′z means x + (y′·z), not (x+y′)z. First complement y, then AND the result with z, then OR with x.",
+      "visual": {
+        "recommended_file": "visuals/topic_12_operator_precedence.png",
+        "description": "Use a four-level ladder labeled Parentheses → NOT → AND → OR, followed by a worked expression with each operation highlighted in order."
+      },
+      "study_tip": "Whenever in doubt, add parentheses before simplifying.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "title": "Circuit Simplification",
+      "summary": "A logic circuit can be simplified by translating the circuit into a Boolean expression, simplifying the expression algebraically or with a K-map, and then rebuilding the reduced expression as a circuit. The goal is an equivalent circuit with fewer gates, fewer inputs per gate, or fewer logic levels when possible.",
+      "key_points": [
+        "Translate each gate into a Boolean expression from the inputs toward the output.",
+        "Simplify using Boolean identities or another approved minimization method.",
+        "Redraw the circuit from the simplified expression.",
+        "Verify equivalence with a truth table when the result is important."
+      ],
+      "worked_example": "Suppose F=AB+AB′+A′C.\nAB+AB′=A(B+B′)=A, so F=A+A′C=A+C.\nThe simplified circuit can therefore be an OR gate with inputs A and C.",
+      "visual": {
+        "recommended_file": "visuals/topic_13_circuit_simplification.png",
+        "description": "Show the original multi-gate circuit, its Boolean expression, the algebraic simplification, and the final reduced circuit in four panels."
+      },
+      "study_tip": "Translate first and simplify second; trying to simplify a circuit visually without writing its expression is error-prone.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Minterms and Maxterms",
+      "summary": "For n Boolean variables, every truth-table row corresponds to exactly one minterm and one maxterm. A minterm is an AND term that evaluates to 1 for exactly one row. A maxterm is an OR term that evaluates to 0 for exactly one row. The row index is normally obtained by reading the variable values as a binary number.",
+      "key_points": [
+        "Minterm m_i contains every variable exactly once and is 1 only at row i.",
+        "In a minterm, a variable is uncomplemented when the row contains 1 and complemented when the row contains 0.",
+        "Maxterm M_i is 0 only at row i.",
+        "In a maxterm, a variable is uncomplemented when the row contains 0 and complemented when the row contains 1."
+      ],
+      "worked_example": "For row x=1,y=0,z=1 (binary 101 = index 5):\nm5 = xy′z.\nM5 = x′+y+z′.\nThe minterm is 1 on that row; the maxterm is 0 on that row.",
+      "visual": {
+        "recommended_file": "visuals/topic_14_minterms_and_maxterms.png",
+        "description": "Show one truth-table row feeding into two boxes: 'minterm → AND term' and 'maxterm → OR term', with the complement choices highlighted."
+      },
+      "study_tip": "Use the rule 'minterm matches the row; maxterm is zero on the row' to avoid memorizing the complement pattern backwards.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "title": "Canonical SOP and POS",
+      "summary": "Canonical forms express a Boolean function using every variable in every product or sum term. Canonical SOP (sum of products) is an OR of minterms for rows where F=1. Canonical POS (product of sums) is an AND of maxterms for rows where F=0. The sigma notation Σm lists the minterm indices; pi notation ΠM lists the maxterm indices.",
+      "key_points": [
+        "Canonical SOP: F=Σm(indices where F=1).",
+        "Canonical POS: F=ΠM(indices where F=0).",
+        "Every minterm contains all variables exactly once.",
+        "Every maxterm contains all variables exactly once.",
+        "The two canonical forms describe the same truth-table function."
+      ],
+      "worked_example": "If F=1 at rows 1,2,3 for variables x,y,z:\nF=Σm(1,2,3)\n=x′y′z + x′yz′ + x′yz.",
+      "visual": {
+        "recommended_file": "visuals/topic_15_canonical_sop_and_pos.png",
+        "description": "Display a truth table with F=1 rows highlighted and then draw the corresponding minterms feeding an OR gate; beside it show the maxterms for the F=0 rows feeding an AND gate."
+      },
+      "study_tip": "Find the output-1 rows first for SOP and output-0 rows first for POS.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "16",
+      "title": "Truth Tables from Canonical Forms",
+      "summary": "A canonical expression can be converted directly into a truth table by using the listed minterm or maxterm indices. For Σm, the listed row indices receive output 1 and all other rows receive 0. For ΠM, the listed row indices receive output 0 and all other rows receive 1.",
+      "key_points": [
+        "For n variables there are 2^n rows.",
+        "The binary representation of a row index gives the input combination.",
+        "Σm lists the rows where F=1.",
+        "ΠM lists the rows where F=0."
+      ],
+      "worked_example": "For F(x,y,z)=Σm(0,3,5,6), mark rows 0,3,5,6 with F=1 and rows 1,2,4,7 with F=0.",
+      "visual": {
+        "recommended_file": "visuals/topic_16_truth_tables_from_canonical_forms.png",
+        "description": "Create an 8-row truth table and animate/highlight the four listed minterm rows before filling the remaining outputs with 0."
+      },
+      "study_tip": "Convert each index to binary and use it to locate the correct row rather than guessing from the expression.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "title": "DeMorgan's Law and Simple Gates",
+      "summary": "DeMorgan's laws relate the complement of an AND expression to the OR of the complements, and the complement of an OR expression to the AND of the complements. They provide a systematic way to move inversion through a gate. This explains why NAND and NOR gates can implement other Boolean operations and are called universal gates.",
+      "key_points": [
+        "(xy)′=x′+y′.",
+        "(x+y)′=x′y′.",
+        "A NAND is an OR gate with both inputs inverted, by DeMorgan's law.",
+        "A NOR is an AND gate with both inputs inverted.",
+        "NAND-only and NOR-only implementations are possible because each is functionally complete."
+      ],
+      "worked_example": "Using NAND to create NOT:\nx NAND x = (xx)′ = x′.\nUsing NOR to create NOT:\nx NOR x = (x+x)′ = x′.",
+      "visual": {
+        "recommended_file": "visuals/topic_17_demorgan_s_law_and_simple_gates.png",
+        "description": "Show a NAND gate with its two inputs tied together producing NOT, and a NOR gate with tied inputs producing NOT. Then show how these building blocks can form AND/OR."
+      },
+      "study_tip": "Apply the law symbolically first; the gate-level transformation then becomes much easier to see.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "title": "NAND-NAND and NOR-NOR Conversion",
+      "summary": "Two-level SOP and POS circuits can be implemented using only NAND or only NOR gates. An SOP expression is naturally implemented as AND terms feeding an OR gate; applying DeMorgan's law converts this to NAND gates in both levels. Similarly, a POS expression implemented as OR terms feeding an AND gate can be converted into a two-level NOR-NOR network.",
+      "key_points": [
+        "SOP → NAND-NAND is the natural two-level NAND implementation.",
+        "POS → NOR-NOR is the natural two-level NOR implementation.",
+        "Double complementation and DeMorgan's law justify the transformations.",
+        "Gate-input inversions may be represented as bubbles in logic diagrams."
+      ],
+      "worked_example": "For F=AB+CD:\nfirst level produces N1=(AB)′ and N2=(CD)′;\nsecond level produces F=(N1·N2)′ = AB+CD.",
+      "visual": {
+        "recommended_file": "visuals/topic_18_nand_nand_and_nor_nor_conversion.png",
+        "description": "Show an AND-OR SOP circuit next to its equivalent NAND-NAND version, with inversion bubbles explaining the DeMorgan transformation."
+      },
+      "study_tip": "Think in terms of where the final inversion is needed; NAND's built-in inversion is what makes the transformation work.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "title": "Truth Tables to K-Maps",
+      "summary": "A Karnaugh map is a visual arrangement of truth-table values designed so logically adjacent minterms are physically adjacent. Rows and columns are labeled in Gray-code order, not ordinary binary order, so adjacent cells differ in exactly one variable. After placing each truth-table output into its corresponding cell, adjacent 1s can be grouped for SOP minimization or adjacent 0s for POS minimization.",
+      "key_points": [
+        "A K-map is a rearranged truth table.",
+        "Cell order uses Gray code so neighboring cells differ in one bit.",
+        "For SOP, place and group 1s; for POS, place and group 0s.",
+        "A 2-variable K-map has 4 cells; 3-variable has 8; 4-variable has 16."
+      ],
+      "worked_example": "For variables x,y,z, columns can be yz=00,01,11,10 while rows are x=0,1. Minterm 2 (010) goes in the row x=0, column yz=10.",
+      "visual": {
+        "recommended_file": "visuals/topic_19_truth_tables_to_k_maps.png",
+        "description": "Show a 3-variable truth table beside its 2×4 K-map, with arrows from each row to its Gray-code cell."
+      },
+      "study_tip": "Always write the Gray-code labels before placing values; most K-map placement errors start with incorrect labels.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Karnaugh Map Part 1",
+          "url": "https://www.youtube.com/watch?v=FPrcIhqNPVo",
+          "type": "youtube"
+        },
+        {
+          "title": "Neso Academy — 4 Variable Karnaugh Map Part 1",
+          "url": "https://www.youtube.com/watch?v=k_gavfON5uA",
+          "type": "youtube"
+        }
+      ]
+    },
+    {
+      "id": "20",
+      "title": "K-Map Adjacency and Grouping",
+      "summary": "K-map minimization works because adjacent cells differ in only one variable. Groups must contain powers of two cells and form rectangles. Groups may wrap around the edges of the map, because the first and last rows/columns can be logically adjacent. Larger valid groups eliminate more variables and generally produce simpler expressions.",
+      "key_points": [
+        "Valid group sizes are 1,2,4,8,16,... depending on map size.",
+        "Groups must be rectangular; diagonal cells are not directly adjacent.",
+        "Edge wrapping is allowed.",
+        "For SOP, cover all 1s; for POS, cover all 0s.",
+        "Overlapping groups are allowed when they reduce the expression.",
+        "Prefer the largest useful groups and avoid groups that add no new coverage."
+      ],
+      "worked_example": "If four adjacent 1s form a quad, two variables that change within the group disappear from the product term, leaving the variables that stay constant.",
+      "visual": {
+        "recommended_file": "visuals/topic_20_k_map_adjacency_and_grouping.png",
+        "description": "Draw a 4×4 map with a wrap-around group highlighted across the left and right edges and another group of four in the center."
+      },
+      "study_tip": "Circle groups visually before writing the algebraic term; this reduces mistakes when identifying which variables remain.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — 4 Variable Karnaugh Map Part 1",
+          "url": "https://www.youtube.com/watch?v=k_gavfON5uA",
+          "type": "youtube"
+        }
+      ]
+    },
+    {
+      "id": "21",
+      "title": "2-Variable SOP K-Maps",
+      "summary": "A 2-variable K-map contains four cells corresponding to m0,m1,m2,m3. For SOP minimization, place 1s and group adjacent 1s. A pair eliminates one changing variable; a group of four eliminates both variables and produces the constant 1.",
+      "key_points": [
+        "Use x as one dimension and y as the other.",
+        "The four cells correspond to 00,01,11,10 in Gray-code order if arranged in a row/column.",
+        "Group 1s in powers of two.",
+        "The variables that change within a group disappear from the product term."
+      ],
+      "worked_example": "If 1s occur at m1 and m3, the cells correspond to 01 and 11. x changes while y remains 1, so the simplified term is y.",
+      "visual": {
+        "recommended_file": "visuals/topic_21_2_variable_sop_k_maps.png",
+        "description": "Show the 2×2 K-map with m1 and m3 shaded as a vertical pair and an arrow explaining that x changes while y stays 1."
+      },
+      "study_tip": "Compare the binary labels of the grouped cells: the bit that stays the same is the variable you keep.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Karnaugh Map Part 1",
+          "url": "https://www.youtube.com/watch?v=FPrcIhqNPVo",
+          "type": "youtube"
+        }
+      ]
+    },
+    {
+      "id": "22",
+      "title": "2-Variable POS K-Maps",
+      "summary": "POS minimization uses groups of 0s rather than 1s. Each zero-group produces a sum term, and the product of those sum terms is the minimized POS expression. For a variable that stays 0 in a zero-group, the corresponding maxterm literal is uncomplemented; for a variable that stays 1, it is complemented.",
+      "key_points": [
+        "Place 0s according to the truth table.",
+        "Group adjacent 0s in powers of two.",
+        "Each zero-group produces one sum term.",
+        "Variables that change inside the group disappear.",
+        "Variables constant at 0 appear uncomplemented; variables constant at 1 appear complemented."
+      ],
+      "worked_example": "If zeros are at m0 (00) and m2 (10), x changes while y=0 stays constant. The group therefore gives the sum term y, so the corresponding factor is (y).",
+      "visual": {
+        "recommended_file": "visuals/topic_22_2_variable_pos_k_maps.png",
+        "description": "Show a 2×2 map with m0 and m2 grouped. Label the changing x bit as eliminated and the constant y=0 bit as the surviving uncomplemented literal."
+      },
+      "study_tip": "Remember: SOP groups 1s and creates product terms; POS groups 0s and creates sum terms.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "23",
+      "title": "3- and 4-Variable K-Maps",
+      "summary": "The same K-map principles extend to three and four variables. A 3-variable map is commonly arranged as 2×4 and a 4-variable map as 4×4. Both dimensions use Gray-code ordering. The maps allow larger groups that can eliminate more variables, while edge wrapping remains valid.",
+      "key_points": [
+        "3-variable map: 8 cells; common arrangement 2×4.",
+        "4-variable map: 16 cells; common arrangement 4×4.",
+        "Use Gray-code order 00,01,11,10 along the multi-bit dimension.",
+        "Valid group sizes remain powers of two.",
+        "Wrap-around applies across opposite edges."
+      ],
+      "worked_example": "For a 4-variable map, a group of 8 cells leaves only one variable in the resulting product term if that variable is constant throughout the group.",
+      "visual": {
+        "recommended_file": "visuals/topic_23_3_and_4_variable_k_maps.png",
+        "description": "Show a 4×4 K-map labeled 00,01,11,10 on both axes, with one interior group and one wrap-around group."
+      },
+      "study_tip": "Practice identifying adjacency before simplifying expressions; the grouping skill transfers directly from 2-variable maps.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — 4 Variable Karnaugh Map Part 1",
+          "url": "https://www.youtube.com/watch?v=k_gavfON5uA",
+          "type": "youtube"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "24",
+      "title": "K-Maps with Don't-Care Conditions",
+      "summary": "A don't-care condition represents an input combination for which the output is irrelevant or that does not occur in the intended operating system. On a K-map it is usually marked X or d. During minimization, a don't-care cell may be treated as either 0 or 1 if doing so creates a larger useful group, but it does not have to be included in any group.",
+      "key_points": [
+        "Don't-cares are optional resources for simplification.",
+        "For SOP, an X can be treated as 1 when it helps enlarge a 1-group.",
+        "For POS, an X can be treated as 0 when it helps enlarge a 0-group.",
+        "You are never required to cover an X unless it is useful.",
+        "The final expression only needs to satisfy the required 0/1 cases."
+      ],
+      "worked_example": "F=Σm(1,3,7)+d(0,5). If treating d(5) as 1 allows a larger valid group covering required 1s, use it; otherwise leave it unused.",
+      "visual": {
+        "recommended_file": "visuals/topic_24_k_maps_with_don_t_care_conditions.png",
+        "description": "Use three cell states—1, 0, X—and show an example where including an X changes two small groups into one larger group."
+      },
+      "study_tip": "Don't-cares are a simplification opportunity, not extra required outputs.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "25",
+      "title": "Half-Adder vs Full-Adder",
+      "summary": "A half-adder adds two one-bit inputs and produces a Sum and Carry. A full-adder adds three one-bit inputs: A, B, and a carry-in from a less significant bit. Full adders can be chained to add multi-bit numbers. A full-adder can be constructed from two half-adders and an OR gate.",
+      "key_points": [
+        "Half-adder: S=A⊕B; C=AB.",
+        "Full-adder: S=A⊕B⊕Cin.",
+        "One equivalent carry equation is Cout=AB+Cin(A⊕B).",
+        "A full-adder accepts a carry from the previous bit position."
+      ],
+      "worked_example": "For a half-adder, A=1,B=1 gives S=0,C=1.\nFor a full-adder, A=1,B=1,Cin=1 gives S=1,Cout=1 because 1+1+1=3=11₂.",
+      "visual": {
+        "recommended_file": "visuals/topic_25_half_adder_vs_full_adder.png",
+        "description": "Show half-adder and full-adder block diagrams side by side, with their input counts and truth tables. Then show two half-adders feeding an OR gate to form a full-adder."
+      },
+      "study_tip": "Think of the carry as information that must move to the next more significant bit.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Full Adder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/full-adder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "title": "2-Bit Adder",
+      "summary": "A 2-bit binary adder combines two 2-bit numbers A1A0 and B1B0. The least-significant bit can use a half-adder when the external carry-in is fixed at 0; the carry produced there becomes the carry-in to a full-adder for the most-significant bit. This illustrates how multi-bit arithmetic is built from one-bit building blocks.",
+      "key_points": [
+        "LSB stage adds A0 and B0 and produces S0 and carry C0.",
+        "MSB stage adds A1, B1, and C0 using a full-adder.",
+        "Final outputs are S1S0 plus the final carry-out.",
+        "The design can instead use full adders at every stage if an external Cin is required."
+      ],
+      "worked_example": "For A=01₂ (1) and B=11₂ (3):\nbit 0: 1+1 → S0=0,C0=1;\nbit 1: 0+1+C0 → S1=0,Cout=1;\nresult = 100₂ = 4.",
+      "visual": {
+        "recommended_file": "visuals/topic_26_2_bit_adder.png",
+        "description": "Draw two stages left-to-right from LSB to MSB, showing C0 traveling from the first stage into the second."
+      },
+      "study_tip": "Label the bit positions clearly: A0/B0 are the LSBs and A1/B1 are the MSBs.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Full Adder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/full-adder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "27",
+      "title": "4-Bit Adder",
+      "summary": "A 4-bit ripple-carry adder adds A3A2A1A0 and B3B2B1B0 using four one-bit full-adders connected in series. The carry-out of each lower-order stage becomes the carry-in of the next higher-order stage. It is simple and modular, but the carry must propagate through the chain, producing a propagation-delay limitation.",
+      "key_points": [
+        "Four full-adders handle four bit positions.",
+        "The first stage receives the external carry-in, normally 0 for ordinary addition.",
+        "Each stage produces a sum bit and carry-out.",
+        "The final carry is the fifth output bit.",
+        "Carry propagation is the main timing limitation of a ripple-carry design."
+      ],
+      "worked_example": "Add 0110₂ (6) and 1011₂ (11):\n0110+1011=10001₂ (17), so the 4-bit sum is 0001 with final carry 1.",
+      "visual": {
+        "recommended_file": "visuals/topic_27_4_bit_adder.png",
+        "description": "Draw four full-adder blocks in a row, with C0 entering bit 0 and arrows C1→C2→C3→C4. Highlight the ripple path."
+      },
+      "study_tip": "Trace carries from the LSB toward the MSB rather than trying to calculate all four stages independently.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Full Adder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/full-adder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "28",
+      "title": "4-Bit Adder/Subtractor",
+      "summary": "A standard adder/subtractor can perform both A+B and A−B using the same four full-adders. A mode control M drives XOR gates on every B bit and also supplies the initial carry-in. When M=0, B is unchanged and Cin=0, so the circuit adds. When M=1, every B bit is complemented and Cin=1, producing A+B′+1, which is A−B in two's complement.",
+      "key_points": [
+        "Each B_i passes through XOR with mode M.",
+        "M=0 → B_i unchanged and C0=0 → addition.",
+        "M=1 → B_i complemented and C0=1 → two's-complement subtraction.",
+        "The same full-adder chain performs both operations."
+      ],
+      "worked_example": "To compute A−B when M=1, XOR turns B into B′ and the initial carry adds the required +1: A+B′+1.",
+      "visual": {
+        "recommended_file": "visuals/topic_28_4_bit_adder_subtractor.png",
+        "description": "Draw four XOR gates in front of the B inputs, a shared M control line, and show M also connected to the first carry-in."
+      },
+      "study_tip": "Memorize the two jobs of M: it complements B when high and supplies the +1 through Cin.",
+      "learn_more": [
+        {
+          "title": "University of Washington CSE 370 — Number Systems Lecture",
+          "url": "https://courses.cs.washington.edu/courses/cse370/03sp/pdfs/lectures/lecture02.pdf",
+          "type": "university_lecture"
+        },
+        {
+          "title": "All About Circuits — Full Adder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/full-adder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "29",
+      "title": "2-Bit Magnitude Comparator",
+      "summary": "A magnitude comparator determines whether one binary number is greater than, equal to, or less than another. For 2-bit numbers A1A0 and B1B0, the most significant bits determine the result when they differ; only when they are equal does the comparison move to the least significant bits. XNOR gates are useful for detecting bit equality.",
+      "key_points": [
+        "Outputs are A>B, A=B, and A<B.",
+        "Compare MSBs first.",
+        "If MSBs are equal, compare LSBs.",
+        "Equality of corresponding bits can be detected with XNOR.",
+        "For equality: (A1 XNOR B1)(A0 XNOR B0)."
+      ],
+      "worked_example": "For A=10₂ and B=01₂, A>B because A1=1 while B1=0; the LSB comparison is irrelevant.",
+      "visual": {
+        "recommended_file": "visuals/topic_29_2_bit_magnitude_comparator.png",
+        "description": "Show two 2-bit inputs entering an MSB comparison block and an LSB comparison block, with the LSB result enabled only when the MSBs are equal."
+      },
+      "study_tip": "Use the same logic you use when comparing ordinary decimal numbers: start at the most significant position.",
+      "learn_more": [
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        },
+        {
+          "title": "All About Circuits — Combinational Logic Functions",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/combinational-logic-functions/",
+          "type": "website"
+        }
+      ]
+    },
+    {
+      "id": "30",
+      "title": "Decoders",
+      "summary": "A decoder converts an n-bit input code into one of up to 2^n output lines. In a basic active-high decoder, each input combination activates exactly one output corresponding to that input's minterm. Decoders are useful for selecting one destination from many possibilities, such as memory or device selection.",
+      "key_points": [
+        "n inputs can select up to 2^n output lines.",
+        "For each input combination, one output is active in a one-hot decoder.",
+        "A 2-to-4 decoder produces four outputs.",
+        "An enable input can disable the entire decoder.",
+        "Outputs can be built from minterms using AND gates and input inversions."
+      ],
+      "worked_example": "For inputs A,B:\nD0=A′B′,\nD1=A′B,\nD2=AB′,\nD3=AB.\nFor A=1,B=0, D2=1 and the other outputs are 0.",
+      "visual": {
+        "recommended_file": "visuals/topic_30_decoders.png",
+        "description": "Show a 2-to-4 decoder block with A,B inputs and four one-hot outputs, alongside the four minterm equations."
+      },
+      "study_tip": "Think 'binary address in, one selected line out'.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Decoder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/decoder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "31",
+      "title": "Encoders",
+      "summary": "An encoder performs the conceptual reverse of a decoder: it converts one active input among multiple input lines into a smaller binary code. A basic encoder assumes that only one input is active at a time. A priority encoder adds rules for cases where multiple inputs are active and selects the highest-priority active input, often producing a valid indicator as well.",
+      "key_points": [
+        "A basic 2^n-to-n encoder converts a one-hot input into an n-bit code.",
+        "The basic design assumes at most one input is active.",
+        "A priority encoder resolves multiple active inputs by choosing the highest-priority one.",
+        "A valid output can indicate whether any meaningful input is active."
+      ],
+      "worked_example": "In an 8-to-3 encoder, if D5 is the only active input, the output code is 101₂.",
+      "visual": {
+        "recommended_file": "visuals/topic_31_encoders.png",
+        "description": "Show eight input lines feeding an encoder and three output lines. Add a second mini-diagram for a priority encoder with D7>D6>...>D0."
+      },
+      "study_tip": "Keep decoder and encoder directions straight: decoder expands a code into lines; encoder compresses one active line into a code.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Encoder",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/encoder/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "32",
+      "title": "Multiplexers",
+      "summary": "A multiplexer (MUX) selects one of several data inputs and routes the selected input to a single output. A 2^n-to-1 MUX uses n select lines. The binary value on the select lines determines which data input is connected to the output. MUXs are fundamental data-routing components and can also implement Boolean functions.",
+      "key_points": [
+        "2^n data inputs require n select lines.",
+        "There is one main output.",
+        "The select value identifies the selected input.",
+        "A 4-to-1 MUX has four data inputs and two select lines.",
+        "A MUX can implement Boolean functions by connecting data inputs to 0, 1, or other signals."
+      ],
+      "worked_example": "For a 4-to-1 MUX, S1S0=10 selects I2, so Y=I2. Its SOP form is:\nY=S1′S0′I0 + S1′S0I1 + S1S0′I2 + S1S0I3.",
+      "visual": {
+        "recommended_file": "visuals/topic_32_multiplexers.png",
+        "description": "Draw a 4-to-1 MUX as a funnel: four data inputs enter, two select lines control the choice, and one output leaves."
+      },
+      "study_tip": "Think 'many inputs, one output' and let the select lines act like the address of the chosen input.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Multiplexers",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-9/multiplexers/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "33",
+      "title": "Arithmetic Logic Unit (ALU)",
+      "summary": "An Arithmetic Logic Unit is a combinational processing block that performs selected arithmetic and logical operations on binary operands. Typical operations include addition, subtraction, AND, OR, XOR, and related functions. Control/select lines determine which operation's result is produced. In a processor, the ALU works with registers and control logic to execute instructions.",
+      "key_points": [
+        "ALUs accept one or more operand words and operation-select control signals.",
+        "An arithmetic section may contain an adder/subtractor.",
+        "A logic section can perform Boolean operations.",
+        "A multiplexer or equivalent selection network can choose the desired result.",
+        "Processor control logic determines which operation the ALU performs."
+      ],
+      "worked_example": "A simple 4-bit ALU could calculate A+B, A−B, A AND B, and A OR B, then use select lines to choose which result reaches the output.",
+      "visual": {
+        "recommended_file": "visuals/topic_33_arithmetic_logic_unit_alu.png",
+        "description": "Show two 4-bit inputs feeding arithmetic and logic blocks, with a selector choosing one result for the ALU output. Add control lines above the selector."
+      },
+      "study_tip": "Think of an ALU as a selectable toolbox of arithmetic and logic operations rather than as one single gate.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — 4-bit ALU Project",
+          "url": "https://www.allaboutcircuits.com/projects/how-to-build-your-own-discrete-4-bit-alu/",
+          "type": "website"
+        },
+        {
+          "title": "All About Circuits — Microprocessors",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-16/microprocessors/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "34",
+      "title": "Latches",
+      "summary": "A latch is a level-sensitive storage element: its output can respond to its input while an enable/control condition is active, and it holds its previous state when the latch is closed. An SR latch can be built from cross-coupled NOR or NAND gates. A gated D latch adds an enable and arranges the inputs so the forbidden SR combination is avoided.",
+      "key_points": [
+        "Latches are level-sensitive, unlike edge-triggered flip-flops.",
+        "An SR latch stores one bit using feedback.",
+        "For an active-high NOR SR latch, S sets Q=1, R resets Q=0, and S=R=0 holds the state; S=R=1 is invalid.",
+        "A D latch uses D and its complement to prevent the invalid SR input combination.",
+        "When enabled, a D latch is transparent: Q follows D; when disabled, Q holds its previous value."
+      ],
+      "worked_example": "For a gated D latch: EN=1,D=1 → Q becomes 1; EN=1,D=0 → Q becomes 0; EN=0 → Q retains its previous value.",
+      "visual": {
+        "recommended_file": "visuals/topic_34_latches.png",
+        "description": "Show an SR latch as two cross-coupled NOR gates, then a gated D latch with an enable signal. Use a timing strip to show level-sensitive behavior."
+      },
+      "study_tip": "Key distinction: a latch responds during an active level; a flip-flop responds at a clock edge.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "35",
+      "title": "Flip-Flops",
+      "summary": "A flip-flop is an edge-triggered storage element that changes state at a specified clock edge, such as a rising or falling edge. Common types are SR, D, JK, and T. The D flip-flop captures D at the active edge; JK supports set, reset, hold, and toggle behavior; T toggles when T=1 and holds when T=0.",
+      "key_points": [
+        "D: Q_next=D.",
+        "JK: J=0,K=0 holds; J=0,K=1 resets; J=1,K=0 sets; J=1,K=1 toggles.",
+        "T: T=0 holds; T=1 toggles, so Q_next=T⊕Q.",
+        "SR flip-flops have set/reset behavior but a forbidden condition depending on implementation.",
+        "Edge triggering means the storage event occurs at a clock transition, not throughout the clock level."
+      ],
+      "worked_example": "For a positive-edge D flip-flop, if D=1 at the rising clock edge, Q becomes 1. If D changes afterward but before the next active edge, Q does not immediately follow it.",
+      "visual": {
+        "recommended_file": "visuals/topic_35_flip_flops.png",
+        "description": "Show a clock waveform with rising-edge markers and compare D-latch behavior against D-flip-flop behavior. Include compact characteristic tables for SR, D, JK, and T."
+      },
+      "study_tip": "Learn the characteristic behavior of each type; the equations are easier to remember once the behavior makes sense.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "36",
+      "title": "State Diagrams",
+      "summary": "A state diagram is a graphical representation of a sequential system's states and transitions. Circles represent states and directed arrows represent transitions. In a Moore machine, outputs are associated with states; in a Mealy machine, outputs are associated with transitions and can depend on current inputs and state.",
+      "key_points": [
+        "A state is a remembered condition of the sequential system.",
+        "Arrows describe how inputs cause transitions between states.",
+        "Moore outputs are associated with states.",
+        "Mealy outputs are associated with transitions and can depend on input.",
+        "State diagrams help designers reason about sequential behavior before implementing gates and flip-flops."
+      ],
+      "worked_example": "A two-state detector might have states S0='previous bit was 0' and S1='previous bit was 1', with arrows labeled by the incoming bit.",
+      "visual": {
+        "recommended_file": "visuals/topic_36_state_diagrams.png",
+        "description": "Draw two circles connected by arrows labeled input/output. Add a second version showing Moore output labels inside the state circles."
+      },
+      "study_tip": "Read every arrow as a rule: 'if the current state and input are these, go to this next state and produce this output'.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "37",
+      "title": "State Diagram to Circuit",
+      "summary": "Turning a state diagram into hardware is a systematic sequential-circuit design process. First derive a state table, then assign binary codes to states, select a flip-flop type, derive next-state and output equations, simplify those equations, and finally connect the flip-flops and combinational logic.",
+      "key_points": [
+        "Create a state table from the diagram.",
+        "Assign binary encodings to the symbolic states.",
+        "Choose a storage element such as D, JK, or T flip-flops.",
+        "Use the appropriate characteristic/excitation relationships to derive flip-flop input equations.",
+        "Simplify next-state/output equations, often with K-maps.",
+        "Draw combinational logic feeding the flip-flop inputs and feed the state outputs back into the logic."
+      ],
+      "worked_example": "For a D flip-flop, once the next-state equation is found as Q_next=f(Q,input), connect f to D. On the active clock edge, the flip-flop stores that next state.",
+      "visual": {
+        "recommended_file": "visuals/topic_37_state_diagram_to_circuit.png",
+        "description": "Show a pipeline: state diagram → state table → binary state assignment → K-maps → logic gates + flip-flops, with feedback from Q outputs to the combinational logic."
+      },
+      "study_tip": "Do not jump directly from arrows to gates; the state table is the bridge that makes the design systematic.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "38",
+      "title": "Register Circuits",
+      "summary": "A register is a group of flip-flops used to store a multi-bit word. The flip-flops normally share a common clock so the word can be loaded or updated together. Registers can include controls such as parallel load and clear. A 4-bit register therefore uses four storage elements and can hold one 4-bit value.",
+      "key_points": [
+        "One flip-flop stores one bit, so n flip-flops store an n-bit word.",
+        "A common clock coordinates state changes.",
+        "Parallel loading transfers multiple bits into the register at once.",
+        "Clear/reset forces stored bits to a known state, often all zeros.",
+        "Registers are used extensively inside processors and digital systems for temporary storage."
+      ],
+      "worked_example": "A 4-bit register holding 1011 has Q3Q2Q1Q0=1011. On a valid load event, new input D3D2D1D0 can replace the stored word simultaneously.",
+      "visual": {
+        "recommended_file": "visuals/topic_38_register_circuits.png",
+        "description": "Draw four D flip-flops in parallel with a shared clock and a load/clear control line. Label the four Q outputs as one 4-bit word."
+      },
+      "study_tip": "Think 'one flip-flop = one bit'; a register is simply a coordinated bank of flip-flops.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Digital Circuits Textbook",
+          "url": "https://www.allaboutcircuits.com/textbook/digi/",
+          "type": "website"
+        },
+        {
+          "title": "All About Circuits — Microprocessors",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-16/microprocessors/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "39",
+      "title": "Synchronous Counter Design",
+      "summary": "A synchronous counter uses a common clock for all flip-flops, so state changes are coordinated at the same clock edge rather than rippling through a chain of clock inputs. Designing one involves defining the desired count sequence, determining the required next-state behavior, deriving flip-flop input conditions, simplifying them, and implementing the resulting logic.",
+      "key_points": [
+        "All flip-flops share the same clock.",
+        "The next state is determined from the current state and the desired count sequence.",
+        "For JK flip-flops, excitation requirements map present/next states to J and K inputs.",
+        "K-maps can simplify the equations driving the flip-flop inputs.",
+        "Synchronous design avoids the accumulated clock ripple delay of asynchronous counters."
+      ],
+      "worked_example": "For a 4-bit binary up-counter using JK flip-flops, the least-significant bit toggles every clock; higher bits toggle when all lower-order bits are 1 immediately before the transition.",
+      "visual": {
+        "recommended_file": "visuals/topic_39_synchronous_counter_design.png",
+        "description": "Show a 4-bit state sequence 0000→0001→0010→...→1111→0000 and a circuit with four flip-flops sharing one clock, with combinational logic determining each toggle condition."
+      },
+      "study_tip": "Start from the state sequence; the flip-flop input equations should come from the sequence rather than being guessed.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Synchronous Counters",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-11/synchronous-counters/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    },
+    {
+      "id": "40",
+      "title": "Serial / Shift Registers",
+      "summary": "A shift register is a chain of storage elements that moves data from one stage to the next on each active clock edge. The four basic input/output organizations are SISO, SIPO, PISO, and PIPO. Shift registers are useful for temporary storage, serial/parallel data conversion, and reducing the number of physical connections needed between digital devices.",
+      "key_points": [
+        "SISO: Serial In, Serial Out — bits enter and leave sequentially.",
+        "SIPO: Serial In, Parallel Out — serial data becomes available simultaneously on multiple outputs.",
+        "PISO: Parallel In, Serial Out — a word is loaded together and shifted out one bit at a time.",
+        "PIPO: Parallel In, Parallel Out — data is loaded and read as a parallel word; shifting may also be supported in universal designs.",
+        "One clock pulse typically advances data by one stage."
+      ],
+      "worked_example": "In a 4-stage SIPO register, four serial bits require four clock pulses to fill the stages; after the fourth pulse, the stored word can be read simultaneously at the parallel outputs.",
+      "visual": {
+        "recommended_file": "visuals/topic_40_serial_shift_registers.png",
+        "description": "The diagram illustrates how a 4-bit Serial-In, Serial-Out (SISO) shift register stores and moves data.\n\n- Shift Register: Four connected stages store one bit each.\n\n- Serial Input: New bits enter the first stage, one bit at a time.\n\n- Clock Signal: Each clock pulse triggers the bits to shift one position to the right.\n\n- Data Movement: Existing bits move into the next stage as new bits enter. After several clock pulses, the incoming bits travel through the register toward the output.\n\n- Serial Output: Bits leave the final stage one at a time, in sequence.\n\nThe bottom of the diagram demonstrates the shifting process over four clock pulses, using the input sequence 1, 0, 1, 1.\n\nKey idea: A shift register temporarily stores binary data and moves it between stages in response to clock pulses."
+      },
+      "study_tip": "Use the names literally: the first word describes how data enters; the second describes how it leaves.",
+      "learn_more": [
+        {
+          "title": "All About Circuits — Shift Registers",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-12/introduction-to-shift-registers/",
+          "type": "website"
+        },
+        {
+          "title": "All About Circuits — SIPO Shift Register",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-12/serial-in-parallel-out-shift-register/",
+          "type": "website"
+        },
+        {
+          "title": "All About Circuits — PISO Shift Register",
+          "url": "https://www.allaboutcircuits.com/textbook/digital/chpt-12/parallel-in-serial-out-shift-register/",
+          "type": "website"
+        },
+        {
+          "title": "Neso Academy — Digital Electronics",
+          "url": "https://www.nesoacademy.org/cs/15-digital-electronics",
+          "type": "youtube_course"
+        }
+      ]
+    }
+  ],
+  "random_facts": [
+    {
+      "topic_id": "01",
+      "fact": "Binary, octal, and hexadecimal are especially useful together because 8=2^3 and 16=2^4, making bit grouping exact."
+    },
+    {
+      "topic_id": "02",
+      "fact": "One hexadecimal digit represents exactly four binary bits, so hexadecimal is a compact way to inspect binary data."
+    },
+    {
+      "topic_id": "03",
+      "fact": "Two's complement has only one representation of zero, unlike signed-magnitude and one's complement."
+    },
+    {
+      "topic_id": "04",
+      "fact": "An n-bit word always has exactly 2^n possible bit patterns, regardless of how those patterns are interpreted."
+    },
+    {
+      "topic_id": "05",
+      "fact": "The same bit pattern can represent very different numbers depending on whether it is interpreted as unsigned, signed-magnitude, one's complement, or two's complement."
+    },
+    {
+      "topic_id": "06",
+      "fact": "Discarding the final carry in fixed-width two's-complement addition is normal; a carry out does not by itself mean signed overflow."
+    },
+    {
+      "topic_id": "07",
+      "fact": "NAND and NOR are universal gates: either one can be used by itself to construct NOT, AND, and OR."
+    },
+    {
+      "topic_id": "08",
+      "fact": "High impedance (Z) is neither logical 0 nor logical 1; it means the output driver is not actively driving the line."
+    },
+    {
+      "topic_id": "09",
+      "fact": "A timing diagram can reveal glitches that are not obvious from a static truth table when real propagation delays are considered."
+    },
+    {
+      "topic_id": "10",
+      "fact": "Boolean simplification changes the representation of a function, not the function itself; the truth table remains the same."
+    },
+    {
+      "topic_id": "11",
+      "fact": "DeMorgan's laws are the Boolean-algebra reason that inversion can be 'pushed through' an AND or OR gate."
+    },
+    {
+      "topic_id": "12",
+      "fact": "Boolean AND has higher precedence than OR, so xy+z means (xy)+z unless parentheses say otherwise."
+    },
+    {
+      "topic_id": "13",
+      "fact": "Circuit simplification can reduce hardware cost and propagation delay by reducing gates or logic levels."
+    },
+    {
+      "topic_id": "14",
+      "fact": "Every truth-table row corresponds to exactly one minterm and exactly one maxterm."
+    },
+    {
+      "topic_id": "15",
+      "fact": "A canonical SOP lists the rows where the function is 1, while a canonical POS lists the rows where it is 0."
+    },
+    {
+      "topic_id": "16",
+      "fact": "The index in Σm or ΠM is simply the binary value of the corresponding input row."
+    },
+    {
+      "topic_id": "17",
+      "fact": "Tying both inputs of a NAND gate together makes it act as a NOT gate."
+    },
+    {
+      "topic_id": "18",
+      "fact": "SOP naturally maps to NAND-NAND and POS naturally maps to NOR-NOR in two-level implementations."
+    },
+    {
+      "topic_id": "19",
+      "fact": "Gray-code ordering is what makes K-map neighbors differ in exactly one variable."
+    },
+    {
+      "topic_id": "20",
+      "fact": "K-map edges wrap around, so cells at opposite edges can belong to the same valid group."
+    },
+    {
+      "topic_id": "21",
+      "fact": "In a 2-variable SOP K-map, a group of two removes one variable and a group of four removes both."
+    },
+    {
+      "topic_id": "22",
+      "fact": "POS K-maps group zeros rather than ones; each zero-group produces a sum term."
+    },
+    {
+      "topic_id": "23",
+      "fact": "A 4-variable K-map has 16 cells, so its largest possible group contains all 16 cells."
+    },
+    {
+      "topic_id": "24",
+      "fact": "A don't-care cell is optional: you may use it to enlarge a group, but you never have to cover it."
+    },
+    {
+      "topic_id": "25",
+      "fact": "A full-adder adds three one-bit values because it must include the carry from the previous bit position."
+    },
+    {
+      "topic_id": "26",
+      "fact": "A 2-bit adder is a small example of hierarchical design: simple one-bit adders are combined to build a larger circuit."
+    },
+    {
+      "topic_id": "27",
+      "fact": "Ripple-carry adders are simple but their carry delay accumulates as the carry moves from the LSB toward the MSB."
+    },
+    {
+      "topic_id": "28",
+      "fact": "The same XOR-control trick used in an adder/subtractor lets one circuit perform both A+B and A−B using two's complement."
+    },
+    {
+      "topic_id": "29",
+      "fact": "Binary comparison starts with the most significant differing bit; lower bits matter only when higher bits are equal."
+    },
+    {
+      "topic_id": "30",
+      "fact": "A decoder can be used as a minterm generator because each output corresponds to one input combination."
+    },
+    {
+      "topic_id": "31",
+      "fact": "A basic encoder assumes one active input; a priority encoder is designed specifically to handle multiple active inputs."
+    },
+    {
+      "topic_id": "32",
+      "fact": "A 4-to-1 multiplexer needs exactly two select lines because 2^2=4."
+    },
+    {
+      "topic_id": "33",
+      "fact": "An ALU is a major computational building block inside a CPU, but it does not by itself control the entire processor."
+    },
+    {
+      "topic_id": "34",
+      "fact": "A D latch is level-sensitive, so when enabled it can be transparent to changes at D."
+    },
+    {
+      "topic_id": "35",
+      "fact": "A T flip-flop toggles its stored bit when T=1 and holds it when T=0 at the active clock edge."
+    },
+    {
+      "topic_id": "36",
+      "fact": "Moore-machine outputs are associated with states, while Mealy-machine outputs are associated with transitions."
+    },
+    {
+      "topic_id": "37",
+      "fact": "The state table is the bridge between an abstract state diagram and the Boolean equations used to build the hardware."
+    },
+    {
+      "topic_id": "38",
+      "fact": "A register with n bits normally requires n one-bit storage elements such as flip-flops."
+    },
+    {
+      "topic_id": "39",
+      "fact": "Synchronous counters clock all flip-flops together, avoiding the clock-ripple behavior of asynchronous counters."
+    },
+    {
+      "topic_id": "40",
+      "fact": "A shift register can convert serial data to parallel data or parallel data to serial data, depending on its organization."
+    }
+  ]
+}

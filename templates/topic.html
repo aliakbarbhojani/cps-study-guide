@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ topic.title }} | CPS 213 Study Guide</title>
+
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.png">
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <main>
+
+        <!-- Back button -->
+        <a href="/" class="back-button">← Back to all topics</a>
+
+
+        <!-- Topic heading -->
+        <header class="hero">
+
+            <p class="eyebrow">
+                TOPIC {{ "%02d"|format(topic.id|int) }}
+            </p>
+
+            <h1>{{ topic.title }}</h1>
+
+            <p class="hero-description">
+                {{ topic.summary }}
+            </p>
+
+        </header>
+
+
+        <!-- Key points -->
+        <section class="study-section">
+
+            <h2>Key Points</h2>
+
+            <ul>
+                {% for point in topic.key_points %}
+                    <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+
+        </section>
+
+
+        <!-- Worked example -->
+        <section class="study-section">
+
+            <h2>Worked Example</h2>
+
+            <div class="study-card">
+                <p>{{ topic.worked_example }}</p>
+            </div>
+
+        </section>
+
+
+        <!-- Visual explanation -->
+        {% if topic.visual %}
+
+        <section class="study-section">
+
+            <h2>Visual Explanation</h2>
+
+            <div class="study-card">
+
+                <p style="white-space: pre-line;">{{ topic.visual.description }}</p>
+
+                {% if topic.visual.recommended_file %}
+                    <p>
+                        Recommended visual:
+                        <img id="visual_image" src="/static/{{ topic.visual.recommended_file }}" alt="Visual explanation" class="visual-image">
+                    </p>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- Study tip -->
+        <section class="study-section">
+
+            <h2>Study Tip</h2>
+
+            <div class="study-card">
+                <p>{{ topic.study_tip }}</p>
+            </div>
+
+        </section>
+
+
+        <!-- Further learning -->
+        {% if topic.learn_more %}
+
+        <section class="study-section">
+
+            <h2>Learn More</h2>
+
+            <div class="resource-list">
+
+                {% for resource in topic.learn_more %}
+
+                    <div class="study-card">
+
+                        {% if resource is mapping %}
+
+                            {% if resource.url %}
+                                <a href="{{ resource.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    {{ resource.title }}
+                                </a>
+                            {% else %}
+                                <h3>{{ resource.title }}</h3>
+                            {% endif %}
+
+                            {% if resource.type %}
+                                <p>{{ resource.type }}</p>
+                            {% endif %}
+
+                        {% else %}
+
+                            <p>{{ resource }}</p>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- Bottom navigation -->
+        <footer class="topic-footer">
+
+            <a href="/" class="back-button">
+                ← Return to all topics
+            </a>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
